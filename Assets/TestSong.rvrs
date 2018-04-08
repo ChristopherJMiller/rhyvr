@@ -1,0 +1,39 @@
+name: Test Song,
+author: Test Author,
+bpm: 100,
+subdivisions: 2,
+offset: 2.50503492,
+drums: 4,
+versions: 2,
+[
+versionName: Medium,
+difficulty: 8,
+color: ff7900,
+0000,
+0100,
+
+0010,
+1100,
+
+0110,
+0110,
+
+0000,
+0000,
+],
+[
+versionName: Hard,
+difficulty: 10,
+color: a10000,
+0000,
+0100,
+
+0010,
+1100,
+
+0110,
+0110,
+
+0000,
+0000,
+]
