@@ -45,6 +45,7 @@ public class SongManager : MonoBehaviour {
                     memStream.Write(buffer, 0, bytesRead);
                 byte[] wavData = memStream.ToArray();
                 WAV wavFile = new WAV(wavData);
+                Debug.Log(wavFile.ToString());
                 AudioClip wav = AudioClip.Create("clip", wavFile.SampleCount, wavFile.ChannelCount, wavFile.Frequency, false);
                 float[] data = new float[wavFile.SampleCount * wavFile.ChannelCount];
                 int internalLeft = 0;

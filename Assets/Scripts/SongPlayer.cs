@@ -9,7 +9,7 @@ public class SongPlayer : MonoBehaviour {
     public string songPath;
     SongPair songPair;
     public SongManager manager;
-    float secsBetweenNotes;
+    double secsBetweenNotes;
     public GameObject noteObj;
     List<Transform> spawnLocations = new List<Transform>();
     public GameObject spawnLocationObj;
@@ -57,7 +57,9 @@ public class SongPlayer : MonoBehaviour {
         Debug.Log(songPair.song.subdivision);
         secsBetweenNotes = 60f / (float)(songPair.song.bpm * songPair.song.subdivision);
         SetUpDrums();
+        Debug.Log(secsBetweenNotes);
         Invoke("PlayMusic", songPair.song.offset);
+        InvokeRepeating("BuildRow", 0f, (float)secsBetweenNotes);
 	}
 
     void PlayMusic()
@@ -119,15 +121,9 @@ public class SongPlayer : MonoBehaviour {
         }
     }
 
-    float internalClock;
     int currentRow = 0;
-	void FixedUpdate () {
-        internalClock += Time.fixedDeltaTime;
-        if (internalClock >= secsBetweenNotes && currentRow <= songPair.song.difficulties[selectDifficulty].noteRow.Count - 1)
-        {
+	void BuildRow () {
             BuildRow(songPair.song.difficulties[selectDifficulty].noteRow[currentRow], currentRow);
-            internalClock = 0;
             currentRow++;
         }
 	}
-}
