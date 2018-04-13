@@ -56,7 +56,7 @@ public class MenuController : MonoBehaviour {
         menuItems[menuIndex].GetComponent<Image>().color = Color.gray;
     }
 
-    private void LoadMenu()
+    async void LoadMenu()
     {
         foreach (string file in Directory.GetFiles(Application.dataPath + "/Songs"))
         {
@@ -65,7 +65,7 @@ public class MenuController : MonoBehaviour {
                 string fileExtension = file.Substring(file.IndexOf(".rhyvr"), file.Length - file.IndexOf(".rhyvr"));
                 if (fileExtension == ".rhyvr")
                 {
-                    SongPair song = SongManager.Load(file);
+                    SongPair song = await SongManager.Load(file);
                     GameObject listItem = (GameObject)Instantiate(songMenuItem, Vector3.zero, Quaternion.identity);
                     listItem.transform.parent = listParent.transform;
                     listItem.transform.localScale = Vector3.one;

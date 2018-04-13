@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using WWUtils.Audio;
 using ICSharpCode.SharpZipLib.Zip;
@@ -29,7 +30,7 @@ public class SongManager : MonoBehaviour {
         return files;
     }
 
-    public static SongPair Load(string path)
+    public static Task<SongPair> Load(string path)
     {
         Stream[] songFileEntries = ExtractZipFile(path);
         using (StreamReader reader = new StreamReader(songFileEntries[0]))
@@ -67,7 +68,7 @@ public class SongManager : MonoBehaviour {
                     zf.IsStreamOwner = true; // Makes close also shut the underlying stream
                     zf.Close(); // Ensure we release resources
                 }
-                return new SongPair(song, wav);
+                return Task.FromResult(new SongPair(song, wav));
             }
         }
     }

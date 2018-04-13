@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VRTK;
 
 public class SongPlayer : MonoBehaviour {
@@ -17,6 +18,9 @@ public class SongPlayer : MonoBehaviour {
     List<GameObject> drums = new List<GameObject>();
     public GameObject drumObj;
     public int points = 0;
+
+    int noteStreak = 0;
+    int maxStreak = 0;
     public int selectDifficulty = 0;
 
     public GameObject cameraHead;
@@ -53,11 +57,8 @@ public class SongPlayer : MonoBehaviour {
         GameObject messenger = GameObject.Find("Messenger");
         songPair = messenger.GetComponent<Messenger>().songToPlay;
         Destroy(messenger);
-        Debug.Log(songPair.song.bpm);
-        Debug.Log(songPair.song.subdivision);
         secsBetweenNotes = 60f / (float)(songPair.song.bpm * songPair.song.subdivision);
         SetUpDrums();
-        Debug.Log(secsBetweenNotes);
         Invoke("PlayMusic", songPair.song.offset);
         InvokeRepeating("BuildRow", 0f, (float)secsBetweenNotes);
 	}
@@ -70,6 +71,14 @@ public class SongPlayer : MonoBehaviour {
     public void Score(int amount)
     {
         points += amount;
+        if (amount == 0) {
+            noteStreak = 0;
+        } else {
+            noteStreak++;
+            if (noteStreak > maxStreak) {
+                maxStreak = noteStreak;
+            }
+        }
     }
 
     public int GetScore()
@@ -80,6 +89,11 @@ public class SongPlayer : MonoBehaviour {
     public Song GetSongPlaying()
     {
         return songPair.song;
+    }
+    
+    public int GetStreak()
+    {
+        return noteStreak;
     }
 
     void BuildRow(NoteRow row, int rowNumber)
@@ -121,9 +135,17 @@ public class SongPlayer : MonoBehaviour {
         }
     }
 
+    void SongDone() {
+        SceneManager.LoadScene(0);
+    }
+
     int currentRow = 0;
-	void BuildRow () {
+    void BuildRow () {
+        if (currentRow < songPair.song.difficulties[selectDifficulty].noteRow.Count) {
             BuildRow(songPair.song.difficulties[selectDifficulty].noteRow[currentRow], currentRow);
             currentRow++;
+        } else {
+            SongDone();
         }
-	}
+    }
+}
