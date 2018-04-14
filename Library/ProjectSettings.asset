@@ -717,7 +717,7 @@ PlayerSettings:
     UNet: 1
     Unity_Ads: 0
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: b0c098ec-4e34-4367-a010-88d5989d61f2
   projectName: RhyVR
   organizationId: chris7332

@@ -16,9 +16,12 @@ public class MenuController : MonoBehaviour {
     int maxIndex;
     public GameObject messenger;
 
+    AudioSource audioSource;
+
+    public float volumeRampMulti;
+
 	void Play()
     {
-        Debug.Log("Play");
         GameObject messengerObj = (GameObject)Instantiate(messenger, Vector3.zero, Quaternion.identity);
         messengerObj.GetComponent<Messenger>().songToPlay = menuItemSongs[menuIndex];
         messengerObj.name = "Messenger";
@@ -47,13 +50,33 @@ public class MenuController : MonoBehaviour {
         UpdateMenuSelection();
     }
 
+    IEnumerator RampVolume() {
+        float volume = 0;
+        float currentTime = 0;
+        while(audioSource.volume != 1) {
+            audioSource.volume = volume;
+            volume = Mathf.Sqrt(currentTime / 4);
+            yield return new WaitForEndOfFrame();
+            currentTime += (Time.deltaTime / volumeRampMulti);
+        }
+    }
+
     void UpdateMenuSelection()
     {
+        audioSource.Stop();
         foreach (GameObject item in menuItems)
         {
             item.GetComponent<Image>().color = Color.white;
         }
         menuItems[menuIndex].GetComponent<Image>().color = Color.gray;
+        
+        audioSource.clip = menuItemSongs[menuIndex].clip;
+        float startingPos = (Random.value * 0.6f) * audioSource.clip.length;
+        audioSource.time = startingPos;
+        audioSource.volume = 0;
+        audioSource.Play();
+        StopCoroutine(RampVolume());
+        StartCoroutine(RampVolume());
     }
 
     async void LoadMenu()
@@ -68,6 +91,7 @@ public class MenuController : MonoBehaviour {
                     SongPair song = await SongManager.Load(file);
                     GameObject listItem = (GameObject)Instantiate(songMenuItem, Vector3.zero, Quaternion.identity);
                     listItem.transform.parent = listParent.transform;
+                    listItem.transform.localPosition = Vector3.zero;
                     listItem.transform.localScale = Vector3.one;
                     listItem.GetComponentInChildren<Text>().text = song.song.name;
                     menuItems.Add(listItem);
@@ -81,6 +105,8 @@ public class MenuController : MonoBehaviour {
 
     private void Start()
     {
+        audioSource = gameObject.GetComponent<AudioSource>();
+        Random.InitState(Mathf.RoundToInt(Time.time * Time.deltaTime));
         LoadMenu();
     }
 }
