@@ -21,7 +21,7 @@ public class SongPlayer : MonoBehaviour {
 
     int noteStreak = 0;
     int maxStreak = 0;
-    public int selectDifficulty = 0;
+    int selectDifficulty = 0;
 
     public GameObject cameraHead;
     public VRTK_ControllerEvents left;
@@ -56,6 +56,7 @@ public class SongPlayer : MonoBehaviour {
     void Start () {
         GameObject messenger = GameObject.Find("Messenger");
         songPair = messenger.GetComponent<Messenger>().songToPlay;
+        selectDifficulty = messenger.GetComponent<Messenger>().difficultySelected;
         Destroy(messenger);
         secsBetweenNotes = 60f / (float)(songPair.song.bpm * songPair.song.subdivision);
         SetUpDrums();

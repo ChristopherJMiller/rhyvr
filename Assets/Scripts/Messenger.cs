@@ -5,4 +5,5 @@ using UnityEngine;
 public class Messenger : MonoBehaviour {
 
     public SongPair songToPlay;
+    public int difficultySelected;
 }
